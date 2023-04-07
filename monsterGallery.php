@@ -1,157 +1,212 @@
 <?php
 
-	# get correct id for plugin
-	$thisfile = basename(__FILE__, ".php");
-		
-	# add in this plugin's language file
-	i18n_merge('monsterGallery') || i18n_merge('monsterGallery', 'en_US');
-	 
-	# register plugin
-	register_plugin(
-		$thisfile, //Plugin id
-		'MonsterGallery', 	//Plugin name
-		'2.2', 		//Plugin version
-		'Multicolor',  //Plugin author
-		'https://github.com/multicolor-rgb', //author website
-		i18n_r('monsterGallery/LANG_Description'), //Plugin description
-		'pages', //page type - on which admin tab to display
-		'monsterGallery'  //main function (administration)
-	);
+# get correct id for plugin
+$thisfile = basename(__FILE__, ".php");
 
-	# add a link in the admin tab 'theme'
-	add_action('pages-sidebar', 'createSideMenu', array($thisfile, i18n_r('monsterGallery/LANG_Settings'), 'monsterGalleryList'));
+# add in this plugin's language file
+i18n_merge('monsterGallery') || i18n_merge('monsterGallery', 'en_US');
 
-	add_action('theme-header', 'makeMagic');
+# register plugin
+register_plugin(
+	$thisfile, //Plugin id
+	'MonsterGallery', 	//Plugin name
+	'2.2', 		//Plugin version
+	'Multicolor',  //Plugin author
+	'https://github.com/multicolor-rgb', //author website
+	i18n_r('monsterGallery/LANG_Description'), //Plugin description
+	'pages', //page type - on which admin tab to display
+	'monsterGallery'  //main function (administration)
+);
 
-	function monsterGallery(){
+# add a link in the admin tab 'theme'
+add_action('pages-sidebar', 'createSideMenu', array($thisfile, i18n_r('monsterGallery/LANG_Settings'), 'monsterGalleryList'));
 
-		if (isset($_GET['credits'])) {
-			include(GSPLUGINPATH . 'monsterGallery/credits.inc.php');
-		};
+add_action('theme-header', 'makeMagic');
 
-		if (isset($_GET['monsterGalleryList'])) {
-			include(GSPLUGINPATH . 'monsterGallery/list.inc.php');
-		};
+function monsterGallery()
+{
 
-		if (isset($_GET['addMonsterGallery'])) {
-			include(GSPLUGINPATH . 'monsterGallery/addNew.inc.php');
-		}
+	if (isset($_GET['credits'])) {
+		include(GSPLUGINPATH . 'monsterGallery/credits.inc.php');
+	};
 
-		if (isset($_GET['migrateGallery'])) {
-			include(GSPLUGINPATH . 'monsterGallery/migrate.inc.php');
-		}
+	if (isset($_GET['monsterGalleryList'])) {
+		include(GSPLUGINPATH . 'monsterGallery/list.inc.php');
+	};
 
-		if (isset($_GET['delete'])) {
-			unlink(GSDATAOTHERPATH . 'monsterGallery/' . $_GET['delete'] . '.json');
+	if (isset($_GET['addMonsterGallery'])) {
+		include(GSPLUGINPATH . 'monsterGallery/addNew.inc.php');
+	}
 
-			global $SITEURL;
+	if (isset($_GET['migrateGallery'])) {
+		include(GSPLUGINPATH . 'monsterGallery/migrate.inc.php');
+	}
 
-			echo "
+	if (isset($_GET['delete'])) {
+		unlink(GSDATAOTHERPATH . 'monsterGallery/' . $_GET['delete'] . '.json');
+
+		global $SITEURL;
+
+		echo "
 			<script type='text/javascript'>
 			window.location.href = '" . $SITEURL . "admin/load.php?id=monsterGallery&monsterGalleryList';
 			</script>";
+	};
+};
+
+require(GSPLUGINPATH . 'monsterGallery/modules/modules.class.php');
+
+function makeMagic()
+{
+
+	function mgShow($matches)
+	{
+		//get class Monster Modules;
+		$modulesClass = new MonsterModules();
+		$modulesClass->set_name($matches);
+
+		//load modules
+		if ($modulesClass->getNameModules() == 'glightbox') {
+			$modulesClass->glightbox();
+			return  $modulesClass->gal;
+		};
+
+		if ($modulesClass->getNameModules()  == 'PhotoSwipe') {
+			$modulesClass->photoswipe();
+			return  $modulesClass->gal;
+		};
+
+		if ($modulesClass->getNameModules() == 'spotlight') {
+			$modulesClass->spotlight();
+			return  $modulesClass->gal;
+		};
+
+		if ($modulesClass->getNameModules() == 'simplelightbox') {
+			$modulesClass->simplelightbox();
+			return  $modulesClass->gal;
+		};
+
+		if ($modulesClass->getNameModules() == 'baguettebox') {
+			$modulesClass->baguettebox();
+			return  $modulesClass->gal;
 		};
 	};
 
-	require(GSPLUGINPATH . 'monsterGallery/modules/modules.class.php');
+	///shortbox create
+	global $content;
+	$newcontent = preg_replace_callback(
+		'/\\[% mg=(.*) %\\]/i',
+		"mgShow",
+		$content
+	);
+	$content = $newcontent;
+};
 
-	function makeMagic(){
+/// style loader
+add_action('theme-header', 'styleloader');
 
-		function mgShow($matches){
-			//get class Monster Modules;
-			$modulesClass = new MonsterModules();
-			$modulesClass->set_name($matches);
+function styleloader()
+{
+	global $SITEURL;
+	global $modules;
 
-			//load modules
-			if ($modulesClass->getNameModules() == 'glightbox') {
-				$modulesClass->glightbox();
-				return  $modulesClass->gal;
-			};
+	if (isset($modules)) {
 
-			if ($modulesClass->getNameModules()  == 'PhotoSwipe') {
-				$modulesClass->photoswipe();
-				return  $modulesClass->gal;
-			};
-
-			if ($modulesClass->getNameModules() == 'spotlight') {
-				$modulesClass->spotlight();
-				return  $modulesClass->gal;
-			};
-
-			if ($modulesClass->getNameModules() == 'simplelightbox') {
-				$modulesClass->simplelightbox();
-				return  $modulesClass->gal;
-			};
-
-			if ($modulesClass->getNameModules() == 'baguettebox') {
-				$modulesClass->baguettebox();
-				return  $modulesClass->gal;
-			};
+		if ($modules == 'glightbox') {
+			echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/glightbox/glightbox.min.css">';
 		};
 
-		///shortbox create
-		global $content;
-		$newcontent = preg_replace_callback(
-			'/\\[% mg=(.*) %\\]/i',
-			"mgShow",
-			$content
-		);
-		$content = $newcontent;
-	};
+		if ($modules == 'PhotoSwipe') {
+			echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/photoswipe/photoswipe.css">';
+		};
 
-	/// style loader
-	add_action('theme-header', 'styleloader');
+		if ($modules == 'spotlight') {
+			echo '<script src="' . $SITEURL . 'plugins/monsterGallery/modules/spotlight/spotlight.bundle.js"></script>';
+		};
 
-	function styleloader(){
-		global $SITEURL;
-		global $modules;
+		if ($modules == 'simplelightbox') {
+			echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/simplelightbox/simple-lightbox.min.css">';
+		};
 
-		if (isset($modules)) {
-
-			if ($modules == 'glightbox') {
-				echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/glightbox/glightbox.min.css">';
-			};
-
-			if ($modules == 'PhotoSwipe') {
-				echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/photoswipe/photoswipe.css">';
-			};
-
-			if ($modules == 'spotlight') {
-				echo '<script src="' . $SITEURL . 'plugins/monsterGallery/modules/spotlight/spotlight.bundle.js"></script>';
-			};
-
-			if ($modules == 'simplelightbox') {
-				echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/simplelightbox/simple-lightbox.min.css">';
-			};
-
-			if ($modules == 'baguettebox') {
-				echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/
+		if ($modules == 'baguettebox') {
+			echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/
 	baguettebox/baguetteBox.min.css">';
-			};
 		};
 	};
+};
 
-	/// script loader
-	add_action('theme-footer', 'scriptloader');
 
-	function scriptloader(){
-		global $SITEURL;
-		global $modules;
+///grab function inside theme
 
-		if (isset($modules)) {
-			if ($modules == 'glightbox') {
-				echo '<script src="' . $SITEURL . 'plugins/monsterGallery/modules/glightbox/glightbox.min.js"></script>';
-				echo '<script src="' . $SITEURL . 'plugins/monsterGallery/modules/glightbox/glightboxrun.js"></script>';
-			};
 
-			if ($modules == 'PhotoSwipe') {
-				echo '<script type="module" src="' . $SITEURL . 'plugins/monsterGallery/modules/photoswipe/photoSwipeModule.js"></script>';
-			};
+function monsterGalleryShow($matches)
+{
+	//get class Monster Modules;
+	$modulesClass = new MonsterModules();
+	$modulesClass->set_name_frontend($matches);
+	global $SITEURL;
 
-			if ($modules == 'simplelightbox') {
-				echo '<script src="' . $SITEURL . 'plugins/monsterGallery/modules/simplelightbox/simple-lightbox.min.js"></script>';
+	//load modules
+	if ($modulesClass->getNameModules() == 'glightbox') {
+		echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/glightbox/glightbox.min.css">';
+		$modulesClass->glightbox();
+		echo $modulesClass->gal;
+	};
 
-				echo "
+	if ($modulesClass->getNameModules()  == 'PhotoSwipe') {
+		echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/photoswipe/photoswipe.css">';
+		$modulesClass->photoswipe();
+		echo  $modulesClass->gal;
+	};
+
+	if ($modulesClass->getNameModules() == 'spotlight') {
+		echo '<script src="' . $SITEURL . 'plugins/monsterGallery/modules/spotlight/spotlight.bundle.js"></script>';
+		$modulesClass->spotlight();
+		echo  $modulesClass->gal;
+	};
+
+	if ($modulesClass->getNameModules() == 'simplelightbox') {
+		echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/simplelightbox/simple-lightbox.min.css">';
+		$modulesClass->simplelightbox();
+		echo  $modulesClass->gal;
+	};
+
+	if ($modulesClass->getNameModules() == 'baguettebox') {
+		echo '<link rel="stylesheet" href="' . $SITEURL . 'plugins/monsterGallery/modules/
+		baguettebox/baguetteBox.min.css">';
+		$modulesClass->baguettebox();
+		echo $modulesClass->gal;
+	};
+};
+
+
+
+
+
+
+
+/// script loader
+add_action('theme-footer', 'scriptloader');
+
+function scriptloader()
+{
+	global $SITEURL;
+	global $modules;
+
+	if (isset($modules)) {
+		if ($modules == 'glightbox') {
+			echo '<script src="' . $SITEURL . 'plugins/monsterGallery/modules/glightbox/glightbox.min.js"></script>';
+			echo '<script src="' . $SITEURL . 'plugins/monsterGallery/modules/glightbox/glightboxrun.js"></script>';
+		};
+
+		if ($modules == 'PhotoSwipe') {
+			echo '<script type="module" src="' . $SITEURL . 'plugins/monsterGallery/modules/photoswipe/photoSwipeModule.js"></script>';
+		};
+
+		if ($modules == 'simplelightbox') {
+			echo '<script src="' . $SITEURL . 'plugins/monsterGallery/modules/simplelightbox/simple-lightbox.min.js"></script>';
+
+			echo "
 					<script>
 					let gallery = new SimpleLightbox('.gallery a');
 					gallery.on('show.simplelihtbox', function (e) {
@@ -161,12 +216,12 @@
 					});
 					</script>
 				";
-			};
+		};
 
-			if ($modules == 'baguettebox') {
-				echo '<script async  src="' . $SITEURL . 'plugins/monsterGallery/modules/baguettebox/baguetteBox.min.js"></script>';
+		if ($modules == 'baguettebox') {
+			echo '<script async  src="' . $SITEURL . 'plugins/monsterGallery/modules/baguettebox/baguetteBox.min.js"></script>';
 
-				echo '
+			echo '
 				<script>
 					window.addEventListener("load", function() {
 						baguetteBox.run(".gallery",(element)=>{
@@ -174,6 +229,6 @@
 						});
 					});
 				</script>';
-			};
 		};
-	}
+	};
+}

@@ -45,4 +45,6 @@ $i18n = array (
 	
 	"LANG_PayPal"			=>	"Do you like using my plugin? Buy me a ☕",
 	
+	"LANG_Delete_Question" => 'Are you sure you want to delete this item?'
+
 );

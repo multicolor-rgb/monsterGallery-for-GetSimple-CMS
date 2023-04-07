@@ -44,5 +44,8 @@ $i18n = array (
 	"LANG_Add_All_Images"	=>	"Añadir Todas Imagenes",
 	
 	"LANG_PayPal"			=>	"¿Te gusta usar mi plugin? Cómprame un ☕",
+
+	"LANG_Delete_Question" => '¿Está seguro de que desea eliminar este elemento?'
+
 	
 );
