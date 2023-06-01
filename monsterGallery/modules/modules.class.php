@@ -53,7 +53,7 @@ class MonsterModules
 				margin:0 auto;
 				display:flex;
 				flex-wrap:wrap;
-				flex-direction:column;
+				flex-direction:row;
 				' . ($this->mobilegap == '' ? '' : 'gap:' . $this->mobilegap . ' !improtant') . ';
 			}
 
@@ -110,7 +110,7 @@ class MonsterModules
 				margin:0 auto;
 				display:flex;
 				flex-wrap:wrap;
-				flex-direction:column;
+				flex-direction:row;
 				' . ($this->mobilegap == '' ? '' : 'gap:' . $this->mobilegap . ' !improtant') . ';
 			}
 
