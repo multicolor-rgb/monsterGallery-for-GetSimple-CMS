@@ -132,12 +132,12 @@ global $SITEURL;; ?>
 
 		<div style="grid-column: 1/2;">
 			<p style="margin: 0;padding:0;"><?php echo i18n_r('monsterGallery/LANG_Mobile_Width'); ?></p>
-			<input type="" name="mobilewidth" style="width:100%; padding:5px; box-sizing: border-box; font-size:12px;" required placeholder="240px" value="<?php echo @$mobilewidth; ?>">
+			<input type="" name="mobilewidth" style="width:100%; padding:5px; box-sizing: border-box; font-size:12px;" required placeholder="100%" value="<?php echo @$mobilewidth; ?>">
 		</div>
 
 		<div style="grid-column: 2/3;">
 			<p style="margin: 0; padding:0;"><?php echo i18n_r('monsterGallery/LANG_Mobile_Height'); ?></p>
-			<input type="" name="mobileheight" style="width:100%; padding:5px; box-sizing: border-box; font-size:12px;" required placeholder="10px" value="<?php echo @$mobileheight; ?>">
+			<input type="" name="mobileheight" style="width:100%; padding:5px; box-sizing: border-box; font-size:12px;" required placeholder="250px" value="<?php echo @$mobileheight; ?>">
 		</div>
 
 		<div style="grid-column: 3/4;">
@@ -148,7 +148,7 @@ global $SITEURL;; ?>
 
 		<div style="grid-column:4/6;">
 			<p style="margin: 0; padding:0;"><?php echo i18n_r('monsterGallery/LANG_Own_Class'); ?></p>
-			<input type="" name="ownclass" style="width:100%; padding:5px; box-sizing: border-box; font-size:12px;" placeholder="own class" value="<?php echo @$ownclass; ?>">
+			<input type="" name="ownclass" style="width:100%; padding:5px; box-sizing: border-box; font-size:12px;" placeholder="<?php echo i18n_r('monsterGallery/LANG_Own_Class'); ?>" value="<?php echo @$ownclass; ?>">
 		</div>
 
 
